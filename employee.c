@@ -17,7 +17,7 @@ struct tm getsysdate(){
 */
 void addEmployee(FILE *ptr){
     int emp_code,age,dob_day,dob_month,dob_year;
-    char first_name[50],middle_name[50],last_name[50],address[50],emp_dept[50],emp_unit[50], gender[50],final_buffer[1200];
+    char first_name[50],middle_name[50],last_name[50],address[50],emp_dept[50],emp_unit[50], emp_role[50], gender[50],final_buffer[1300];
     printf("Enter Employee Code :");
     scanf("%d", &emp_code);
     printf("Enter Employee's First name :");
@@ -30,6 +30,8 @@ void addEmployee(FILE *ptr){
     scanf(" %[^\n]s", gender);
     printf("Enter Employee's address :");
     scanf(" %[^\n]s", address);
+    printf("Enter Employee's Role :");
+    scanf(" %[^\n]s", emp_role);
     printf("Enter Employee's Department name :");
     scanf(" %[^\n]s", emp_dept);
     printf("Enter Employee's Unit name :");
@@ -44,7 +46,7 @@ void addEmployee(FILE *ptr){
     if(dob_month > getsysdate().tm_mon+1 ) year_diff -= 1;
     age = year_diff;
     // Formatting the user input.
-    sprintf(final_buffer , "%d | %s | %s | %s | %s | %s | %d/%d/%d | %d | %s | %s\n",emp_code,first_name,middle_name,last_name,gender,address,dob_day,dob_month,dob_year,age,emp_dept,emp_unit);
+    sprintf(final_buffer , "%d | %s | %s | %s | %s | %s | %d/%d/%d | %d | %s | %s | %s\n",emp_code,first_name,middle_name,last_name,gender,address,dob_day,dob_month,dob_year,age,emp_role,emp_dept,emp_unit);
     ptr = fopen("file.txt","a");
     fputs(final_buffer, ptr);
     fclose(ptr);
@@ -56,8 +58,8 @@ bool isEmployeePresent(FILE *ptr, int emp_code){
     int emp_no_f;
     char *str_tok;
     ptr = fopen("file.txt","r");
-    char getmessage[1000];
-    while(fgets(getmessage, 1000, ptr) != NULL){
+    char getmessage[1300];
+    while(fgets(getmessage, 1300, ptr) != NULL){
         str_tok = strtok(strdup(getmessage), " | ");
         emp_no_f = atoi(str_tok);
         if(emp_no_f == emp_code) {
@@ -72,11 +74,11 @@ bool isEmployeePresent(FILE *ptr, int emp_code){
 */
 void deleteEmployee(FILE *ptr, int emp_code){
     int emp_no_f, del_ren;
-    char getmessage[1000];
+    char getmessage[1300];
     char *str_tok;
     ptr = fopen("file.txt" , "r");
     FILE *del_ptr = fopen("delete.txt", "w+");
-    while(fgets(getmessage, 1000, ptr) != NULL){
+    while(fgets(getmessage, 1300, ptr) != NULL){
         str_tok = strtok(strdup(getmessage), " | ");
         emp_no_f = atoi(str_tok);
         if(emp_no_f != emp_code) fputs(getmessage, del_ptr);
@@ -97,7 +99,7 @@ void updateEmployee(FILE *ptr, int emp_code){
         return;
     }
     int age,dob_day,dob_month,dob_year;
-    char first_name[50],middle_name[50],last_name[50],address[50],emp_dept[50],emp_unit[50],gender[50],final_buffer[1200];
+    char first_name[50],middle_name[50],last_name[50],address[50],emp_dept[50],emp_unit[50],emp_role[50],gender[50],final_buffer[1300];
     printf("Enter Employee's First name :");
     scanf(" %[^\n]s",first_name);
     printf("Enter Employee's Middle name :");
@@ -108,6 +110,8 @@ void updateEmployee(FILE *ptr, int emp_code){
     scanf(" %[^\n]s", gender);
     printf("Enter Employee's address :");
     scanf(" %[^\n]s", address);
+    printf("Enter Employee's Role :");
+    scanf(" %[^\n]s", emp_role);
     printf("Enter Employee's Department name :");
     scanf(" %[^\n]s", emp_dept);
     printf("Enter Employee's Unit name :");
@@ -123,7 +127,7 @@ void updateEmployee(FILE *ptr, int emp_code){
     if(dob_month > getsysdate().tm_mon+1 ) year_diff -= 1;
     age = year_diff;
     
-    sprintf(final_buffer , "%d | %s | %s | %s | %s | %s | %d/%d/%d | %d | %s | %s\n",emp_code,first_name,middle_name,last_name,gender,address,dob_day,dob_month,dob_year,age,emp_dept,emp_unit);
+    sprintf(final_buffer , "%d | %s | %s | %s | %s | %s | %d/%d/%d | %d | %s | %s | %s\n",emp_code,first_name,middle_name,last_name,gender,address,dob_day,dob_month,dob_year,age,emp_role,emp_dept,emp_unit);
     deleteEmployee(ptr, emp_code);
     ptr = fopen("file.txt","a");
     fputs(final_buffer, ptr);
@@ -133,9 +137,9 @@ void updateEmployee(FILE *ptr, int emp_code){
     This Function is for displaying all employee's details.
 */
 void displayAllEmployee(FILE *ptr){
-    char getmessage[1000];
+    char getmessage[1300];
     ptr = fopen("file.txt","r");
-    while(fgets(getmessage, 1000, ptr) !=  NULL){
+    while(fgets(getmessage, 1300, ptr) !=  NULL){
         printf("%s", getmessage);
     }
     fclose(ptr);
@@ -147,8 +151,8 @@ void displayEmployeeInfo(FILE *ptr, int emp_code){
     int emp_no_f,flag = 0;
     char *str_tok;
     ptr = fopen("file.txt","r");
-    char getmessage[1000];
-    while(fgets(getmessage, 1000, ptr) != NULL){
+    char getmessage[1300];
+    while(fgets(getmessage, 1300, ptr) != NULL){
         str_tok = strtok(strdup(getmessage), " | ");
         emp_no_f = atoi(str_tok);
         if(emp_no_f == emp_code) {
@@ -182,7 +186,7 @@ int main(){
     int choice,emp_code;
     char *filename = "file.txt";
     FILE *ptr;
-    char file_header[1200] = "S.no | First Name | Middle Name | Last Name | Gender | Address | Date of Birth | Age | Emp. Dept | Emp. Unit\n";
+    char file_header[1300] = "Employee code | First Name | Middle Name | Last Name | Gender | Address | Date of Birth | Age | Employee Role | Employee Department | Employee Unit\n";
     printf("Press \n1. Add a Employee\n2. Delete a Employee\n3. Update a Employee\n4. Display all Employee\n5. Display an Employee Info\n6. Exit");
     if(!file_exists(filename)){
         ptr = fopen(filename,"w+");
@@ -215,7 +219,7 @@ int main(){
                 break;
             case 5:
                 int emp_code;
-                printf("Enter Employee Code to be displayed :");
+                printf("Enter Employee Code whose info to be displayed :");
                 scanf("%d",&emp_code);
                 displayEmployeeInfo(ptr, emp_code);
                 break;
