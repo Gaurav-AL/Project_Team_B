@@ -196,7 +196,6 @@ int main(){
         ptr = fopen(filename,"a");
     } 
     fclose(ptr);
-    if(choice == 6) goto exit;
     do{
         printf("\nEnter Your choice : ");
         scanf("%d",&choice);
@@ -228,5 +227,4 @@ int main(){
                 break;
         }
     }while(choice != 6);
-    exit:
 }
