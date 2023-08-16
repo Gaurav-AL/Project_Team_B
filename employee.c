@@ -14,15 +14,16 @@ struct tm getsysdate(){
 /*
     Validating Whether Employee is in File or no
 */
-bool isEmployeePresent(FILE *ptr, int emp_code){
+bool isEmployeePresent(FILE *ptr, int emp_code,char *filename){
     int emp_no_f;
     char *str_tok;
-    ptr = fopen("file.txt","r");
+    ptr = fopen(filename,"r");
     char getmessage[1300];
     while(fgets(getmessage, 1300, ptr) != NULL){
         str_tok = strtok(strdup(getmessage), " | ");
         emp_no_f = atoi(str_tok);
         if(emp_no_f == emp_code) {
+            fclose(ptr);
             return true;
         }
     }
@@ -32,12 +33,12 @@ bool isEmployeePresent(FILE *ptr, int emp_code){
 /*
     This Function is to add the Employee Details.
 */
-void addEmployee(FILE *ptr){
+void addEmployee(FILE *ptr,char *filename){
     int emp_code,age,dob_day,dob_month,dob_year;
     char first_name[50],middle_name[50],last_name[50],address[50],emp_dept[50],emp_unit[50], emp_role[50], gender[50],final_buffer[1300];
     printf("Enter Employee Code :");
     scanf("%d", &emp_code);
-    if(isEmployeePresent(ptr, emp_code)){
+    if(isEmployeePresent(ptr, emp_code,filename)){
         printf("Employee Already Exists :(");
         return;
     }
@@ -68,7 +69,7 @@ void addEmployee(FILE *ptr){
     age = year_diff;
     // Formatting the user input.
     sprintf(final_buffer , "%d | %s | %s | %s | %s | %s | %d/%d/%d | %d | %s | %s | %s\n",emp_code,first_name,middle_name,last_name,gender,address,dob_day,dob_month,dob_year,age,emp_role,emp_dept,emp_unit);
-    ptr = fopen("file.txt","a");
+    ptr = fopen(filename,"a");
     fputs(final_buffer, ptr);
     printf("Employee Added Successfully :)");
     fclose(ptr);
@@ -77,15 +78,15 @@ void addEmployee(FILE *ptr){
 /*
     This function is for deleting employee's record.
 */
-void deleteEmployee(FILE *ptr, int emp_code){
-    if(!isEmployeePresent(ptr, emp_code)){
+void deleteEmployee(FILE *ptr, int emp_code,char *filename){
+    if(!isEmployeePresent(ptr, emp_code,filename)){
         printf("Employee Does not Exists :(");
         return;
     }
     int emp_no_f, del_ren;
     char getmessage[1300];
     char *str_tok;
-    ptr = fopen("file.txt" , "r");
+    ptr = fopen(filename , "r");
     FILE *del_ptr = fopen("delete.txt", "w+");
     while(fgets(getmessage, 1300, ptr) != NULL){
         str_tok = strtok(strdup(getmessage), " | ");
@@ -102,8 +103,8 @@ void deleteEmployee(FILE *ptr, int emp_code){
 /*
     This Function is for updating Employee's Data.
 */
-void updateEmployee(FILE *ptr, int emp_code){
-    if(!isEmployeePresent(ptr, emp_code)){
+void updateEmployee(FILE *ptr, int emp_code, char *filename){
+    if(!isEmployeePresent(ptr, emp_code,filename)){
         printf("Employee Id is wrong or not present in the Database :(");
         return;
     }
@@ -137,8 +138,8 @@ void updateEmployee(FILE *ptr, int emp_code){
     age = year_diff;
     
     sprintf(final_buffer , "%d | %s | %s | %s | %s | %s | %d/%d/%d | %d | %s | %s | %s\n",emp_code,first_name,middle_name,last_name,gender,address,dob_day,dob_month,dob_year,age,emp_role,emp_dept,emp_unit);
-    deleteEmployee(ptr, emp_code);
-    ptr = fopen("file.txt","a");
+    deleteEmployee(ptr, emp_code,filename);
+    ptr = fopen(filename,"a");
     printf("Employee Updated Successfully :)");
     fputs(final_buffer, ptr);
     fclose(ptr);
@@ -146,9 +147,9 @@ void updateEmployee(FILE *ptr, int emp_code){
 /*
     This Function is for displaying all employee's details.
 */
-void displayAllEmployee(FILE *ptr){
+void displayAllEmployee(FILE *ptr, char *filename){
     char getmessage[1300];
-    ptr = fopen("file.txt","r");
+    ptr = fopen(filename,"r");
     while(fgets(getmessage, 1300, ptr) !=  NULL){
         printf("%s", getmessage);
     }
@@ -157,10 +158,10 @@ void displayAllEmployee(FILE *ptr){
 /*
     This function is for displaying employee's data according to the employee code.
 */
-void displayEmployeeInfo(FILE *ptr, int emp_code){
+void displayEmployeeInfo(FILE *ptr, int emp_code, char *filename){
     int emp_no_f,flag = 0;
     char *str_tok;
-    ptr = fopen("file.txt","r");
+    ptr = fopen(filename,"r");
     char getmessage[1300];
     while(fgets(getmessage, 1300, ptr) != NULL){
         str_tok = strtok(strdup(getmessage), " | ");
@@ -211,26 +212,26 @@ int main(){
         scanf("%d",&choice);
         switch(choice){
             case 1:
-                addEmployee(ptr);
+                addEmployee(ptr,filename);
                 break;
             case 2:
                 printf("Enter Employee Code to be deleted :");
                 scanf("%d",&emp_code);
-                deleteEmployee(ptr, emp_code);
+                deleteEmployee(ptr, emp_code,filename);
                 break;
             case 3:
                 printf("Enter Employee Code to be updated :");
                 scanf("%d",&emp_code);
-                updateEmployee(ptr, emp_code);
+                updateEmployee(ptr, emp_code,filename);
                 break;
             case 4:
-                displayAllEmployee(ptr);
+                displayAllEmployee(ptr,filename);
                 break;
             case 5:
                 int emp_code;
                 printf("Enter Employee Code whose info to be displayed :");
-                scanf("%d",&emp_code);
-                displayEmployeeInfo(ptr, emp_code);
+                scanf("%d",&emp_code,filename);
+                displayEmployeeInfo(ptr, emp_code,filename);
                 break;
             default:
                 printf("Wrong choice ! :(");
