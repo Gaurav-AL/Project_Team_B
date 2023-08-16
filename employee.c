@@ -78,6 +78,10 @@ void addEmployee(FILE *ptr){
     This function is for deleting employee's record.
 */
 void deleteEmployee(FILE *ptr, int emp_code){
+    if(!isEmployeePresent(ptr, emp_code)){
+        printf("Employee Does not Exists :(");
+        return;
+    }
     int emp_no_f, del_ren;
     char getmessage[1300];
     char *str_tok;
