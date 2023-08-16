@@ -11,7 +11,24 @@ struct tm getsysdate(){
     sysdate = time(NULL);
     return *localtime(&sysdate);
 }
-
+/*
+    Validating Whether Employee is in File or no
+*/
+bool isEmployeePresent(FILE *ptr, int emp_code){
+    int emp_no_f;
+    char *str_tok;
+    ptr = fopen("file.txt","r");
+    char getmessage[1300];
+    while(fgets(getmessage, 1300, ptr) != NULL){
+        str_tok = strtok(strdup(getmessage), " | ");
+        emp_no_f = atoi(str_tok);
+        if(emp_no_f == emp_code) {
+            return true;
+        }
+    }
+    fclose(ptr);
+    return false;
+}
 /*
     This Function is to add the Employee Details.
 */
@@ -20,6 +37,10 @@ void addEmployee(FILE *ptr){
     char first_name[50],middle_name[50],last_name[50],address[50],emp_dept[50],emp_unit[50], emp_role[50], gender[50],final_buffer[1300];
     printf("Enter Employee Code :");
     scanf("%d", &emp_code);
+    if(isEmployeePresent(ptr, emp_code)){
+        printf("Employee Already Exists :(");
+        return;
+    }
     printf("Enter Employee's First name :");
     scanf(" %[^\n]s",first_name);
     printf("Enter Employee's Middle name :");
@@ -49,26 +70,10 @@ void addEmployee(FILE *ptr){
     sprintf(final_buffer , "%d | %s | %s | %s | %s | %s | %d/%d/%d | %d | %s | %s | %s\n",emp_code,first_name,middle_name,last_name,gender,address,dob_day,dob_month,dob_year,age,emp_role,emp_dept,emp_unit);
     ptr = fopen("file.txt","a");
     fputs(final_buffer, ptr);
+    printf("Employee Added Successfully :)");
     fclose(ptr);
 }
-/*
-    Validating Whether Employee is in File or no
-*/
-bool isEmployeePresent(FILE *ptr, int emp_code){
-    int emp_no_f;
-    char *str_tok;
-    ptr = fopen("file.txt","r");
-    char getmessage[1300];
-    while(fgets(getmessage, 1300, ptr) != NULL){
-        str_tok = strtok(strdup(getmessage), " | ");
-        emp_no_f = atoi(str_tok);
-        if(emp_no_f == emp_code) {
-            return true;
-        }
-    }
-    fclose(ptr);
-    return false;
-}
+
 /*
     This function is for deleting employee's record.
 */
@@ -130,6 +135,7 @@ void updateEmployee(FILE *ptr, int emp_code){
     sprintf(final_buffer , "%d | %s | %s | %s | %s | %s | %d/%d/%d | %d | %s | %s | %s\n",emp_code,first_name,middle_name,last_name,gender,address,dob_day,dob_month,dob_year,age,emp_role,emp_dept,emp_unit);
     deleteEmployee(ptr, emp_code);
     ptr = fopen("file.txt","a");
+    printf("Employee Updated Successfully :)");
     fputs(final_buffer, ptr);
     fclose(ptr);
 }
@@ -186,7 +192,7 @@ int main(){
     int choice,emp_code;
     char *filename = "file.txt";
     FILE *ptr;
-    char file_header[1300] = "Employee code | First Name | Middle Name | Last Name | Gender | Address | Date of Birth | Age | Employee Role | Employee Department | Employee Unit\n";
+    char file_header[1300] = "Employee code | First Name | Middle Name | Last Name | Gender | Address | Date of Birth | Age | Employee Role | Employee Department | Employee Unit\n\n";
     printf("Press \n1. Add a Employee\n2. Delete a Employee\n3. Update a Employee\n4. Display all Employee\n5. Display an Employee Info\n6. Exit");
     if(!file_exists(filename)){
         ptr = fopen(filename,"w+");
