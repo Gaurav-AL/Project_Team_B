@@ -23,6 +23,7 @@ bool isEmployeePresent(FILE *ptr, int emp_code,char *filename){
         str_tok = strtok(strdup(getmessage), " | ");
         emp_no_f = atoi(str_tok);
         if(emp_no_f == emp_code) {
+            // Close the file before returning else next time Ambiguity will arise.
             fclose(ptr);
             return true;
         }
